@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.yapily</groupId>
+    <artifactId>yapily-api-maven-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
+    <version>1.0,0-SNAPSHOT</version>
+
+    <name>Yapily Api Plugin</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!--        <openapi-generator-maven-plugin.version>5.0.1</openapi-generator-maven-plugin.version>-->
+        <!--        <api-spec-git-url>https://bitbucket.com/yapily/${api-spec-type}</api-spec-git-url>-->
+        <!--        <spec-git-local-repository>${project.basedir}/spec</spec-git-local-repository>-->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>3.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+<!--            <configuration>-->
+<!--                &lt;!&ndash; see http://jira.codehaus.org/browse/MNG-5346 &ndash;&gt;-->
+<!--                <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>-->
+<!--            </configuration>-->
+            <version>3.6.0</version>
+                        <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-project</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>5.10.0.202012080955-r</version>
+        </dependency>
+    </dependencies>
+
+    <!--    <pluginGroups> TODO: MAY NEED THIS SOMEWHERE https://www.baeldung.com/maven-plugin-->
+    <!--        <pluginGroup>com.baeldung</pluginGroup>-->
+    <!--    </pluginGroups>-->
+
+
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <artifactId>exec-maven-plugin</artifactId>-->
+    <!--                <groupId>org.codehaus.mojo</groupId>-->
+    <!--                <version>3.0.0</version>-->
+    <!--                <executions>-->
+    <!--                    <execution>-->
+    <!--                        <id>Validate Spec Version</id>-->
+    <!--&lt;!&ndash;                        <phase>generate-sources</phase>&ndash;&gt;-->
+    <!--                        &lt;!&ndash;TODO: ORDER BEFORE THE API INTERFACES TRY TO GENERATE&ndash;&gt;-->
+    <!--                        &lt;!&ndash;TODO: CALL FROM MOJO (LOOKUP HOW TO DEPEND ON ANOTHER PLUGIN) &ndash;&gt;-->
+    <!--                        <goals>-->
+    <!--                            <goal>exec</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <executable>-->
+    <!--                                git clone https://bitbucket.com/yapily/${api-spec-git-location} &#45;&#45;tag ${api-spec-version} &#45;&#45;outputDir ${spec-git-local-repository}-->
+    <!--                                &lt;!&ndash; validate-api-spec-version may be as simple as git clone (as git may internally handle offline tag-only-check) &ndash;&gt;-->
+    <!--                                &lt;!&ndash; GITIGNORE: ${spec-git-local-repository} &ndash;&gt;-->
+    <!--                            </executable>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                    <execution>-->
+    <!--                        <id>clean</id>-->
+    <!--                        &lt;!&ndash; separate from the main clean phase&ndash;&gt;-->
+    <!--                        <goals>-->
+    <!--                            <goal>exec</goal>-->
+    <!--                        </goals>-->
+    <!--                        <configuration>-->
+    <!--                            <executable>rmdir -rf ${spec-git-local-repository}</executable>-->
+    <!--                        </configuration>-->
+    <!--                    </execution>-->
+    <!--                </executions>-->
+    <!--            </plugin>-->
+    <!--&lt;!&ndash;            <plugin>&ndash;&gt;-->
+    <!--&lt;!&ndash;                <groupId>org.openapitools</groupId>&ndash;&gt;-->
+    <!--&lt;!&ndash;                <artifactId>openapi-generator-maven-plugin</artifactId>&ndash;&gt;-->
+    <!--&lt;!&ndash;                <version>${openapi-generator-maven-plugin.version}</version>&ndash;&gt;-->
+    <!--&lt;!&ndash;                <executions>&ndash;&gt;-->
+    <!--&lt;!&ndash;                    <execution>&ndash;&gt;-->
+    <!--&lt;!&ndash;                        <goals>&ndash;&gt;-->
+    <!--&lt;!&ndash;                            <goal>generate</goal>&ndash;&gt;-->
+    <!--&lt;!&ndash;                        </goals>&ndash;&gt;-->
+    <!--&lt;!&ndash;                        &ndash;&gt;-->
+
+    <!--&lt;!&ndash;                        <configuration>&ndash;&gt;-->
+    <!--&lt;!&ndash;                            <inputSpec>${openapi-spec}</inputSpec>&ndash;&gt;-->
+    <!--&lt;!&ndash;                            &lt;!&ndash;                            <inputSpec>${api-spec-location}</inputSpec>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;                            <generatorName>spring</generatorName>&ndash;&gt;-->
+    <!--&lt;!&ndash;                            <configOptions>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <interfaceOnly>true</interfaceOnly>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <java8>true</java8>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <invokerPackage>com.yapily.platform.security.consent</invokerPackage>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <dateLibrary>java8</dateLibrary>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                &lt;!&ndash;                                <dateLibrary>custom</dateLibrary>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;                                &lt;!&ndash;                                <jsr310>true</jsr310>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <typeMappings>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <typeMapping>date=LocalDate</typeMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <typeMapping>date-time=Instant</typeMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <typeMapping>java.util.Date=LocalDate</typeMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <typeMapping>org.joda.time.DateTime=Instant</typeMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <typeMapping>Date=LocalDate</typeMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <typeMapping>DateTime=Instant</typeMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                </typeMappings>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <importMappings>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <importMapping>Instant=java.time.Instant</importMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                    <importMapping>LocalDate=java.time.LocalDate</importMapping>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                </importMappings>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <reactive>true</reactive>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                <useOptional>true</useOptional>&ndash;&gt;-->
+    <!--&lt;!&ndash;                                &lt;!&ndash;                                <skipDefaultInterface>true</skipDefaultInterface>&ndash;&gt;&ndash;&gt;-->
+    <!--&lt;!&ndash;                            </configOptions>&ndash;&gt;-->
+    <!--&lt;!&ndash;                        </configuration>&ndash;&gt;-->
+    <!--&lt;!&ndash;                    </execution>&ndash;&gt;-->
+    <!--&lt;!&ndash;                </executions>&ndash;&gt;-->
+    <!--&lt;!&ndash;            </plugin>&ndash;&gt;-->
+    <!--        </plugins>-->
+    <!--    </build>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.yapily</groupId>
+                <artifactId>yapily-api-maven-plugin</artifactId>
+                <configuration>
+                    <!--   INHERITED FROM yapily-platform-security POM.XML -->
+                    <apiType>yapily-security</apiType>
+                    <apiVersion>0.0.1</apiVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
