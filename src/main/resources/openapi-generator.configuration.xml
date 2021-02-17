@@ -1,0 +1,27 @@
+<configuration>
+    <skip>true</skip>
+    <generatorName>spring</generatorName>
+    <configOptions>
+        <interfaceOnly>true</interfaceOnly>
+        <java8>true</java8>
+        <invokerPackage>com.yapily.platform.security.consent</invokerPackage>
+        <dateLibrary>java8</dateLibrary>
+        <!--                                <dateLibrary>custom</dateLibrary>-->
+        <!--                                <jsr310>true</jsr310>-->
+        <typeMappings>
+            <typeMapping>date=LocalDate</typeMapping>
+            <typeMapping>date-time=Instant</typeMapping>
+            <typeMapping>java.util.Date=LocalDate</typeMapping>
+            <typeMapping>org.joda.time.DateTime=Instant</typeMapping>
+            <typeMapping>Date=LocalDate</typeMapping>
+            <typeMapping>DateTime=Instant</typeMapping>
+        </typeMappings>
+        <importMappings>
+            <importMapping>Instant=java.time.Instant</importMapping>
+            <importMapping>LocalDate=java.time.LocalDate</importMapping>
+        </importMappings>
+        <reactive>true</reactive>
+        <useOptional>true</useOptional>
+        <!--                                <skipDefaultInterface>true</skipDefaultInterface>-->
+    </configOptions>
+</configuration>
