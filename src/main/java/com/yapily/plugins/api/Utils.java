@@ -17,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @UtilityClass
 class Utils {
+    final String SPEC_PARENT_RELATIVE_TO_PROJECT = "yapily-api";
+
     Path getPath(YapilyApi api, MavenProject project) {
         return getSpecParent(project).resolve(api.toString());
     }
@@ -33,8 +35,8 @@ class Utils {
      * @param project to resolve against
      * @return folder containing the yapil-api-spec local repository
      */
-    private Path getSpecParent(MavenProject project) {
-        return project.getBasedir().toPath().resolve("yapily-api");
+    Path getSpecParent(MavenProject project) {
+        return project.getBasedir().toPath().resolve(SPEC_PARENT_RELATIVE_TO_PROJECT);
     }
 
     void clean(YapilyApi api, MavenProject project) throws IOException {
@@ -66,10 +68,10 @@ class Utils {
         String apiGitUrl = api.getGitUrl();
 
         if (cleanDirectoryIfExists(outputPath)) {
-            log.info("\tCleaned up invalid git repository at: {}", outputPath);
+            log.info("Cleaned up invalid git repository at: {}", outputPath);
         }
 
-        log.info("\tCloning {}/{} into {}", api.toString(), apiGitUrl, outputPath);
+        log.info("Cloning {}/{} into {}", api.toString(), apiGitUrl, outputPath);
         Git.cloneRepository()
            .setURI(apiGitUrl)
            .setBranch("refs/tags/" + api.getVersionTag())
