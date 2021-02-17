@@ -87,6 +87,10 @@ public class GenerateMojo extends AbstractMojo {
             throw e;
         }
 
+        autoGitIgnoreSpecParent();
+    }
+
+    private void autoGitIgnoreSpecParent() {
         // Logic to auto ignore open api specifications
         Path projectGitignorePath = project.getBasedir().toPath().resolve(".gitignore");
         if (Files.exists(projectGitignorePath)) {
