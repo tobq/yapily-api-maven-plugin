@@ -79,4 +79,13 @@ class Utils {
            .call()
            .close();
     }
+
+    static boolean isGitRepository(Path p) {
+        if (!Files.isDirectory(p)) return false;
+        var dir = p.toFile();
+        return new RepositoryBuilder()
+                       .addCeilingDirectory(dir)
+                       .findGitDir(dir)
+                       .getGitDir() != null;
+    }
 }

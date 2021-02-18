@@ -22,10 +22,8 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.util.FS;
 
 import lombok.extern.slf4j.Slf4j;
-import static org.eclipse.jgit.lib.RepositoryCache.FileKey.isGitRepository;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
@@ -139,11 +137,8 @@ public class GenerateMojo extends AbstractMojo {
         var apiName = api.toString();
         log.info("Fetching {}", apiName);
 
-        // TODO: JGit is saying valid git repo is invalid for some reason (even creating a Git object fails)
-        boolean repoCloned = isGitRepository(Utils.getPath(api, project).toFile(), FS.DETECTED);
-
-        if (repoCloned) {
-            log.info("\t{} API already cached", apiName);
+        if (Utils.isGitRepository(Utils.getPath(api, project))) {
+            log.info("\t{} already cached", apiName);
         } else {
             Utils.fetchApi(api, project);
         }
