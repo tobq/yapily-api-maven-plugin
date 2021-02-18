@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @UtilityClass
 class Utils {
-    final Path SPEC_PARENT_RELATIVE_TO_PROJECT = Path.of("yapily-api");
 
     Path getPath(YapilyApi api, MavenProject project) {
         return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
@@ -38,7 +37,7 @@ class Utils {
      * @return folder containing the yapil-api-spec local repository
      */
     Path getSpecParent(MavenProject project) {
-        return project.getBasedir().toPath().resolve(SPEC_PARENT_RELATIVE_TO_PROJECT);
+        return project.getBasedir().toPath().resolve(Path.of("yapily-api"));
     }
 
     void cleanSpecLocalGitRepository(YapilyApi api, MavenProject project) throws IOException {
