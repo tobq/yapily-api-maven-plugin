@@ -1,6 +1,6 @@
 # Usage
 
-## Add dependency
+## Adding plugin to pom.xml
 ```xml
 <plugin>
     <groupId>com.yapily</groupId>
