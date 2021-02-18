@@ -40,7 +40,7 @@ public class ApiGenerateMojo extends AbstractMojo {
     @Parameter(property = "version.openapi-generator", defaultValue = "5.0.1")
     String openapiGeneratorVersion;
     @Parameter
-    Xpp3Dom openApiOptions;
+    Xpp3Dom openapiConfigurationOverrides;
     @Component
     private MavenProject project;
     @Component
@@ -121,9 +121,9 @@ public class ApiGenerateMojo extends AbstractMojo {
             throw new MojoExecutionException("Failed to parse embedded openapi-generator configuration", e);
         }
 
-        if (openApiOptions != null) {
+        if (openapiConfigurationOverrides != null) {
             log.info("Merging user-defined openapi-generator configuration");
-            openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(openapiMavenPluginConfiguration, openApiOptions);
+            openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(openapiMavenPluginConfiguration, openapiConfigurationOverrides);
         }
 
         // add the inputSpec (-i) path (from the yapily-api local-repo)
