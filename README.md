@@ -1,4 +1,8 @@
-# Usage
+# `yapily-api-maven-plugin`
+
+Automatically handles API server-stub generation
+
+# Usage 
 
 ## Adding plugin to pom.xml
 ```xml
