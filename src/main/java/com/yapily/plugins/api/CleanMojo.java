@@ -11,11 +11,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-
 @Mojo(name = "clean")
 public class CleanMojo extends AbstractMojo {
     @Parameter(property = "openapi-generator.version")
@@ -31,13 +26,6 @@ public class CleanMojo extends AbstractMojo {
         try {
             Utils.cleanSpecParent(project);
             Utils.cleanServerStubbing(project);
-
-            executeMojo(
-                    Utils.getOpenApiplugin(openapiGeneratorVersion),
-                    goal("clean"),
-                    configuration(),
-                    executionEnvironment(project, mavenSession, pluginManager)
-            );
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to clean", e);
         }

@@ -22,6 +22,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -63,7 +64,7 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         try {
             executeMojo(
-                    Utils.getOpenApiplugin(openapiGeneratorVersion),
+                    MojoExecutor.plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
                     goal("generate"),
                     configuration(api),
                     executionEnvironment(project, mavenSession, pluginManager)
