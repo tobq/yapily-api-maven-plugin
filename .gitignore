@@ -24,6 +24,9 @@
 .idea/**/libraries
 target
 
+#sonarlint
+.idea/sonarlint
+
 ## Gradle and Maven with auto-import
  .idea/artifacts
  .idea/compiler.xml
