@@ -21,7 +21,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -51,16 +50,7 @@ public class ApiGenerateMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         var api = new YapilyApi(apiType, apiVersion);
-        try {
-            fetchApi(api);
-        } catch (GitAPIException | IOException e) {
-            try {
-                Utils.cleanSpecLocalGitRepository(api, project);
-            } catch (IOException e1) {
-                log.error("Failed to clean up api", e1);
-            }
-            throw new MojoExecutionException("Failed to fetch api" + e.getClass().getName(), e);
-        }
+        fetchApi(api);
 
         try {
             executeMojo(
@@ -126,7 +116,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         return openapiMavenPluginConfiguration;
     }
 
-    private void fetchApi(YapilyApi api) throws GitAPIException, IOException {
+    private void fetchApi(YapilyApi api) throws MojoExecutionException {
         var apiName = api.toString();
         log.info("Fetching {}", apiName);
 

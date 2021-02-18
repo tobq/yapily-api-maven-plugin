@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -63,23 +64,6 @@ class Utils {
         }
     }
 
-    static void fetchApi(YapilyApi api, MavenProject project) throws IOException, GitAPIException {
-        Path outputPath = getPath(api, project);
-        String apiGitUrl = api.getGitUrl();
-
-        if (cleanDirectoryIfExists(outputPath)) {
-            log.info("Cleaned up invalid git repository at: {}", outputPath);
-        }
-
-        log.info("Cloning {} into {}", apiGitUrl, outputPath);
-        Git.cloneRepository()
-           .setURI(apiGitUrl)
-           .setBranch("refs/tags/" + api.getVersionTag())
-           .setDirectory(outputPath.toFile())
-           .call()
-           .close();
-    }
-
     static boolean isGitRepository(Path p) {
         if (!Files.isDirectory(p)) return false;
         var dir = p.toFile();
@@ -89,13 +73,30 @@ class Utils {
                        .getGitDir() != null;
     }
 
-    static void cleanServerStubbing(MavenProject project) throws IOException {
-        cleanDirectoryIfExists(getGeneratedSourcesDirectory(project));
-    }
+    static void fetchApi(YapilyApi api, MavenProject project) throws MojoExecutionException {
+        var apiName = api.toString();
 
-    private static Path getGeneratedSourcesDirectory(MavenProject project) {
-        return Path.of(project.getBuild().getDirectory())
-                   .resolve("generated-sources")
-                   .resolve("yapily-api");
+        try {
+            log.info("Fetching {}", apiName);
+            Path outputPath = getPath(api, project);
+            String apiGitUrl = api.getGitUrl();
+
+            if (cleanDirectoryIfExists(outputPath)) {
+                log.info("Cleaned up invalid git repository at: {}", outputPath);
+            }
+
+            log.info("Cloning {} into {}", apiGitUrl, outputPath);
+            Git.cloneRepository()
+               .setURI(apiGitUrl)
+               .setBranch("refs/tags/" + api.getVersionTag())
+               .setDirectory(outputPath.toFile())
+               .call()
+               .close();
+        } catch (IOException | GitAPIException e) {
+            try {
+                Utils.cleanSpecLocalGitRepository(api, project);
+            } catch (IOException ignored) { }
+            throw new MojoExecutionException("Failed to fetch: " + apiName, e);
+        }
     }
 }

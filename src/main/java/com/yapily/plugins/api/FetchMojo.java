@@ -1,14 +1,11 @@
 package com.yapily.plugins.api;
 
-import java.io.IOException;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,14 +21,8 @@ public class FetchMojo extends AbstractMojo {
 
     @Override public void execute() throws MojoExecutionException {
         var api = new YapilyApi(apiType, apiVersion);
-        var apiName = api.toString();
-
-        try {
-            log.info("Fetching {}", apiName);
-            Utils.fetchApi(api, project);
-        } catch (IOException | GitAPIException e) {
-            throw new MojoExecutionException("Failed to fetch " + apiName, e);
-        }
+        Utils.fetchApi(api, project);
     }
+
 }
 
