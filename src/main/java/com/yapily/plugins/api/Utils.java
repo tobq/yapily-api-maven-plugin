@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.RepositoryBuilder;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @UtilityClass
 class Utils {
-    final String SPEC_PARENT_RELATIVE_TO_PROJECT = "yapily-api";
+    final Path SPEC_PARENT_RELATIVE_TO_PROJECT = Path.of("yapily-api");
 
     Path getPath(YapilyApi api, MavenProject project) {
-        return getSpecParent(project).resolve(api.toString());
+        return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
     }
 
     Path getConfig(YapilyApi api, MavenProject project) {
@@ -71,7 +72,7 @@ class Utils {
             log.info("Cleaned up invalid git repository at: {}", outputPath);
         }
 
-        log.info("Cloning {}/{} into {}", api.toString(), apiGitUrl, outputPath);
+        log.info("Cloning {} into {}", apiGitUrl, outputPath);
         Git.cloneRepository()
            .setURI(apiGitUrl)
            .setBranch("refs/tags/" + api.getVersionTag())
