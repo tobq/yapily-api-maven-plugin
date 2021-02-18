@@ -24,7 +24,7 @@ class Utils {
         return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
     }
 
-    Path getConfig(YapilyApi api, MavenProject project) {
+    Path getSpec(YapilyApi api, MavenProject project) {
         return getPath(api, project).resolve("api.yml");
     }
 
