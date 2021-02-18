@@ -18,7 +18,7 @@ mvn yapily-api generate
 ```
 ### fetch
 ```shell
-mvn yapily-api generate
+mvn yapily-api fetch
 ```
 
 ### Clean
