@@ -12,6 +12,9 @@
 </plugin>
 ```
 
+## Steps
+* Note: this steps automatically run during the natural project build-cycle (so don't usually need to be explicitly executed)
+
 ### generate
 ```shell
 mvn yapily-api generate
@@ -25,3 +28,4 @@ mvn yapily-api fetch
 ```shell
 mvn yapily-api clean
 ```
+- Cleans the downloaded specifications (not automatically cleaned during the `clean` phase, to allow offline cleaning/compilation)
