@@ -13,7 +13,7 @@
 ```
 
 ## Steps
-* Note: these steps automatically run during the natural project build-cycle (so don't usually need to be explicitly executed)
+* Note: these steps automatically run during the natural project life-cycle (so you should'nt need to explicitly execute them)
 
 ### generate
 ```shell
