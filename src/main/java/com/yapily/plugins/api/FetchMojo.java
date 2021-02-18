@@ -24,11 +24,13 @@ public class FetchMojo extends AbstractMojo {
 
     @Override public void execute() throws MojoExecutionException {
         var api = new YapilyApi(apiType, apiVersion);
+        var apiName = api.toString();
+
         try {
-            log.info("Fetching {} API", api.toString());
+            log.info("Fetching {}", apiName);
             Utils.fetchApi(api, project);
         } catch (IOException | GitAPIException e) {
-            throw new MojoExecutionException("Failed to fetch API: " + api.toString(), e);
+            throw new MojoExecutionException("Failed to fetch " + apiName, e);
         }
     }
 }

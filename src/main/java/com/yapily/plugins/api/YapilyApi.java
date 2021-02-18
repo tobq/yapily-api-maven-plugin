@@ -7,6 +7,10 @@ import lombok.Value;
     String version;
 
     @Override public String toString() {
+        return String.format("%s API (%s)", type, version);
+    }
+
+    public String getLocalGitRepositoryFolderName() {
         return String.format("%s-%s", type, version);
     }
 

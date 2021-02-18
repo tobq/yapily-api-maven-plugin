@@ -137,7 +137,7 @@ public class GenerateMojo extends AbstractMojo {
 
     private void fetchApi(YapilyApi api) throws GitAPIException, IOException {
         var apiName = api.toString();
-        log.info("Fetching {} API", apiName);
+        log.info("Fetching {}", apiName);
 
         // TODO: JGit is saying valid git repo is invalid for some reason (even creating a Git object fails)
         boolean repoCloned = isGitRepository(Utils.getPath(api, project).toFile(), FS.DETECTED);
