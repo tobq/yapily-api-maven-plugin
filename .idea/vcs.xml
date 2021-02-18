@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/yapily-api/yapily-platform-security-0.0.1" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/yapily-platform-security-0.0.1" vcs="Git" />
   </component>
 </project>
