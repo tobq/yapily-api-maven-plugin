@@ -28,7 +28,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 
 @Slf4j
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
@@ -37,7 +36,7 @@ public class ApiGenerateMojo extends AbstractMojo {
     String apiVersion;
     @Parameter(required = true)
     String apiType;
-    @Parameter(readonly = true, property = "openapi-generator.version")
+    @Parameter(property = "openapi-generator.version")
     String openapiGeneratorVersion;
     @Parameter
     Xpp3Dom openApiOptions;
@@ -64,7 +63,7 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         try {
             executeMojo(
-                    plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
+                    Utils.getOpenApiplugin(openapiGeneratorVersion),
                     goal("generate"),
                     configuration(api),
                     executionEnvironment(project, mavenSession, pluginManager)

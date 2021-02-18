@@ -7,10 +7,12 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -97,5 +99,9 @@ class Utils {
         return Path.of(project.getBuild().getDirectory())
                    .resolve("generated-sources")
                    .resolve("yapily-api");
+    }
+
+    static Plugin getOpenApiplugin(String openapiGeneratorVersion) {
+        return MojoExecutor.plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion);
     }
 }
