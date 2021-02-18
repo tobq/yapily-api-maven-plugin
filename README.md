@@ -1,6 +1,6 @@
 # `yapily-api-maven-plugin`
 
-Automatically handles API server-stub generation
+Automatically handles API server stub generation
 
 # Usage 
 
@@ -23,10 +23,13 @@ Automatically handles API server-stub generation
 ```shell
 mvn yapily-api:generate
 ```
+Fetches (cached) API, before generating the server stubbing using the OpenAPI spec
+
 ### fetch
 ```shell
 mvn yapily-api:fetch
 ```
+Fetches API from yapily-api bitbucket repository
 
 ### Clean
 ```shell
