@@ -11,7 +11,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Mojo(name = "clean")
+@Slf4j
 public class CleanMojo extends AbstractMojo {
     @Parameter(property = "openapi-generator.version")
     String openapiGeneratorVersion;
@@ -26,6 +29,7 @@ public class CleanMojo extends AbstractMojo {
         try {
             Utils.cleanSpecParent(project);
         } catch (IOException e) {
+            log.error("Failed to clean", e);
             throw new MojoExecutionException("Failed to clean", e);
         }
     }
