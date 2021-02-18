@@ -74,10 +74,8 @@ class Utils {
     }
 
     static void fetchApi(YapilyApi api, MavenProject project) throws MojoExecutionException {
-        var apiName = api.toString();
-
         try {
-            log.info("Fetching {}", apiName);
+            log.info("Fetching {}", api);
             Path outputPath = getPath(api, project);
             String apiGitUrl = api.getGitUrl();
 
@@ -95,8 +93,10 @@ class Utils {
         } catch (IOException | GitAPIException e) {
             try {
                 Utils.cleanSpecLocalGitRepository(api, project);
-            } catch (IOException ignored) { }
-            throw new MojoExecutionException("Failed to fetch: " + apiName, e);
+            } catch (IOException ignored) {
+                log.debug("Failed to clean local specification for {} after failing to fetch it", api);
+            }
+            throw new MojoExecutionException("Failed to fetch: " + api, e);
         }
     }
 }

@@ -117,11 +117,10 @@ public class ApiGenerateMojo extends AbstractMojo {
     }
 
     private void fetchApi(YapilyApi api) throws MojoExecutionException {
-        var apiName = api.toString();
-        log.info("Fetching {}", apiName);
+        log.info("Fetching {}", api);
 
         if (Utils.isGitRepository(Utils.getPath(api, project))) {
-            log.info("\t{} already cached", apiName);
+            log.info("\t{} already cached", api);
         } else {
             Utils.fetchApi(api, project);
         }
