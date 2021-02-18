@@ -29,3 +29,4 @@ mvn yapily-api fetch
 mvn yapily-api clean
 ```
 - Cleans the downloaded specifications (not automatically cleaned during the `clean` phase, to allow offline cleaning/compilation)
+- Auto generated artifacts are automatically .gitignored by the plugin
