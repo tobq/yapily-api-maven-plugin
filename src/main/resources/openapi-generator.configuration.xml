@@ -3,7 +3,7 @@
     <configOptions>
         <interfaceOnly>true</interfaceOnly>
         <java8>true</java8>
-        <invokerPackage>com.yapily.platform.security.consent</invokerPackage>
+        <packageName>com.yapily.platform.security.consent</packageName>
         <dateLibrary>java8</dateLibrary>
         <!--                                <dateLibrary>custom</dateLibrary>-->
         <!--                                <jsr310>true</jsr310>-->
