@@ -1,8 +1,6 @@
 <configuration>
     <generatorName>spring</generatorName>
     <configOptions>
-        <baseBackage>com.yapily</baseBackage>
-        <!-- TODO: using base package does not work for automatically resolving the api/model package -->
         <apiPackage>com.yapily.api</apiPackage>
         <modelPackage>com.yapily.model</modelPackage>
 
