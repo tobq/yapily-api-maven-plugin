@@ -55,7 +55,7 @@ public class GenerateMojo extends AbstractMojo {
             fetchApi(api);
         } catch (GitAPIException | IOException e) {
             try {
-                Utils.clean(api, project);
+                Utils.cleanSpecLocalGitRepository(api, project);
             } catch (IOException e1) {
                 log.error("Failed to clean up api", e1);
             }

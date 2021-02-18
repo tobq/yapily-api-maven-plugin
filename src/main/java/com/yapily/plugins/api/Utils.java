@@ -40,23 +40,22 @@ class Utils {
         return project.getBasedir().toPath().resolve(SPEC_PARENT_RELATIVE_TO_PROJECT);
     }
 
-    void clean(YapilyApi api, MavenProject project) throws IOException {
+    void cleanSpecLocalGitRepository(YapilyApi api, MavenProject project) throws IOException {
         cleanDirectoryIfExists(getPath(api, project));
     }
 
-    void clean(MavenProject project) throws IOException {
+    void cleanSpecParent(MavenProject project) throws IOException {
         cleanDirectoryIfExists(getSpecParent(project));
     }
 
     boolean cleanDirectoryIfExists(Path path) throws IOException {
         boolean exists = Files.exists(path);
-        if (exists) {
-            cleanDirectory(path);
-        }
+        if (exists) cleanDirectory(path);
+
         return exists;
     }
 
-    private void cleanDirectory(Path path) throws IOException {
+    static void cleanDirectory(Path path) throws IOException {
         try (Stream<Path> walk = Files.walk(path)) {
             walk.sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
@@ -88,5 +87,15 @@ class Utils {
                        .addCeilingDirectory(dir)
                        .findGitDir(dir)
                        .getGitDir() != null;
+    }
+
+    static void cleanServerStubbing(MavenProject project) throws IOException {
+        cleanDirectoryIfExists(getGeneratedSourcesDirectory(project));
+    }
+
+    private static Path getGeneratedSourcesDirectory(MavenProject project) {
+        return Path.of(project.getBuild().getDirectory())
+                   .resolve("generated-sources")
+                   .resolve("yapily-api");
     }
 }
