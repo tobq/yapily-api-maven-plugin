@@ -1,5 +1,4 @@
 <configuration>
-    <skip>true</skip>
     <generatorName>spring</generatorName>
     <configOptions>
         <interfaceOnly>true</interfaceOnly>
