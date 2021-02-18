@@ -25,7 +25,6 @@ public class CleanMojo extends AbstractMojo {
     @Override public void execute() throws MojoExecutionException {
         try {
             Utils.cleanSpecParent(project);
-            Utils.cleanServerStubbing(project);
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to clean", e);
         }
