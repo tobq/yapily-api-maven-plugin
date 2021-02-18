@@ -31,8 +31,8 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 
 @Slf4j
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.COMPILE)
-public class GenerateMojo extends AbstractMojo {
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
+public class ApiGenerateMojo extends AbstractMojo {
     @Parameter(required = true)
     String apiVersion;
     @Parameter(required = true)
