@@ -14,7 +14,7 @@ import org.apache.maven.project.MavenProject;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Mojo(name = "clean-spec", defaultPhase = LifecyclePhase.CLEAN)
+@Mojo(name = "clean-specs", defaultPhase = LifecyclePhase.CLEAN)
 @Slf4j
 public class CleanSpecMojo extends AbstractMojo {
     @Parameter(property = "openapi-generator.version")
