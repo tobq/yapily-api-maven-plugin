@@ -12,8 +12,8 @@ Automatically handles API server stub generation
     <groupId>com.yapily</groupId>
     <artifactId>yapily-api-implementation-maven-plugin</artifactId>
     <configuration>
-        <apiType>yapily-platform-security</apiType>
-        <apiVersion>0.0.1</apiVersion>
+        <apiType>yapily-platform-consent-service</apiType>
+        <apiVersion>0.0.3</apiVersion>
     </configuration>
 </plugin>
 ```
