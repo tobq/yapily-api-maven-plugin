@@ -58,7 +58,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         fetchApi(api);
 
         var configuration = configuration(api);
-        log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Generating stubbing using configuration: {}", configuration);
+        log.debug("Generating stubbing using configuration: {}", configuration);
         try {
             executeMojo(
                     MojoExecutor.plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
@@ -72,7 +72,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
 
         var compileSourceRoot = Utils.getCompileSourceRoot(project);
-        log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Adding compile source root: {}", compileSourceRoot);
+        log.debug("Adding compile source root: {}", compileSourceRoot);
         project.addCompileSourceRoot(compileSourceRoot.toString());
 
 
@@ -80,7 +80,7 @@ public class ApiGenerateMojo extends AbstractMojo {
             try {
                 autoGitIgnoreArtifacts();
             } catch (IOException e) {
-                log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Failed to automatically ignore fetched specs", e);
+                log.debug("Failed to automatically ignore fetched specs", e);
             }
         }
     }
@@ -141,7 +141,7 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         if (openapiConfigurationOverrides != null) {
             log.info("Merging user-defined openapi-generator configuration");
-            log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"\t config {}", openapiConfigurationOverrides);
+            log.debug("\t config {}", openapiConfigurationOverrides);
 
             openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(
                     openapiMavenPluginConfiguration,

@@ -103,7 +103,7 @@ class Utils {
             try {
                 Utils.cleanSpecLocalGitRepository(api, project);
             } catch (IOException ignored) {
-                log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Failed to clean local specification for {} after failing to fetch it",
+                log.debug("Failed to clean local specification for {} after failing to fetch it",
                                                                                                                                                          api);
             }
             log.error("Failed to fetch {}: ", api, e);
