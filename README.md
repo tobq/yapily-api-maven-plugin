@@ -20,17 +20,14 @@ Automatically handles API server stub generation, for service implementations
 
 ## Steps
 
-* Note: these steps automatically run during the natural project life-cycle (so you do not need to explicitly execute them to get started)
-
 ### generate
 
 ```shell
 mvn yapily-api:generate
 ```
-
 Fetches (cached) API, before generating the server stubbing using the OpenAPI spec
-
-- Note: Auto-generated artifacts are automatically .gitignored by the plugin
+- `generate` automatically runs during the `generate-sources` phase (so you do not need to explicitly execute them to get started)
+- Auto-generated artifacts are automatically .gitignored by the plugin
 
 ### fetch
 
