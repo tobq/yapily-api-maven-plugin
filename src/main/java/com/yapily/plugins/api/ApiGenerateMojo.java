@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
@@ -24,6 +25,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
@@ -57,17 +59,21 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         fetchApi(api);
 
+        Configuration configuration = configuration(api);
         try {
             executeMojo(
                     MojoExecutor.plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
                     goal("generate"),
-                    configuration(api),
+                    configuration.getXml(),
                     executionEnvironment(project, mavenSession, pluginManager)
             );
         } catch (MojoExecutionException e) {
             log.error("Failed to generate server stubbing", e);
             throw e;
         }
+
+        project.addCompileSourceRoot(configuration.getOutputDirectory().toString());
+
 
         if (autoGitignore) {
             try {
@@ -114,7 +120,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
     }
 
-    private Xpp3Dom configuration(YapilyApi api) throws MojoExecutionException {
+    private Configuration configuration(YapilyApi api) throws MojoExecutionException {
         Xpp3Dom openapiMavenPluginConfiguration;
         try (var is = getClass().getResourceAsStream("/openapi-generator.configuration.xml")) {
             if (is == null) {
@@ -125,6 +131,9 @@ public class ApiGenerateMojo extends AbstractMojo {
             log.error("Failed to parse embedded openapi-generator configuration", e);
             throw new MojoExecutionException("Failed to parse embedded openapi-generator configuration", e);
         }
+
+        var outputDirectory = Utils.getServerStubbing(project);
+        openapiMavenPluginConfiguration.addChild(element("output", outputDirectory.toString()).toDom());
 
         if (openapiConfigurationOverrides != null) {
             log.info("Merging user-defined openapi-generator configuration");
@@ -139,7 +148,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         // add the inputSpec (-i) path (from the yapily-api local-repo)
         openapiMavenPluginConfiguration.addChild(element("inputSpec", Utils.getSpec(api, project).toString()).toDom());
 
-        return openapiMavenPluginConfiguration;
+        return new Configuration(openapiMavenPluginConfiguration, outputDirectory);
     }
 
     private void fetchApi(YapilyApi api) throws MojoExecutionException {
@@ -151,5 +160,11 @@ public class ApiGenerateMojo extends AbstractMojo {
             Utils.fetchApi(api, project);
         }
     }
+}
+
+
+@Value class Configuration {
+    Xpp3Dom xml;
+    Path outputDirectory;
 }
 

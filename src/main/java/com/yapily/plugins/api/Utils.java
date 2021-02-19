@@ -103,6 +103,36 @@ class Utils {
         }
     }
 
+    static void cleanServerStubbing(MavenProject project) throws IOException {
+        cleanDirectoryIfExists(getServerStubbing(project));
+    }
+
+    static Path getServerStubbing(MavenProject project) {
+        return Path.of(project.getBuild().getDirectory())
+                   .resolve("generated-sources")
+                   .resolve("yapily-api");
+    }
+
+    static MojoExecutor.Element buildElement(Map<String, Object> parameter, String name) {
+        var children = parameter.entrySet()
+                                .stream()
+                                .map(entry -> {
+                                    var o = entry.getValue();
+                                    var childName = entry.getKey();
+
+                                    if (o instanceof String) {
+                                        return element(childName, (String) o);
+                                    } else if (o instanceof Map) {
+                                        return element(childName, buildElement((Map<String, Object>) o, childName));
+                                    } else {
+                                        return element(childName);
+                                    }
+                                })
+                                .toArray(MojoExecutor.Element[]::new);
+
+        return new MojoExecutor.Element(name, children);
+    }
+
     static MojoExecutor.Element buildElement(Map<String, Object> parameter, String name) {
         var children = parameter.entrySet()
                                 .stream()
