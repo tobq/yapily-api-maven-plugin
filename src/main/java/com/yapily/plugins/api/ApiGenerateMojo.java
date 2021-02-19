@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
@@ -25,7 +24,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
@@ -59,29 +57,30 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         fetchApi(api);
 
-        Configuration configuration = configuration(api);
+        var configuration = configuration(api);
+        log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Generating stubbing using configuration: {}", configuration);
         try {
             executeMojo(
                     MojoExecutor.plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
                     goal("generate"),
-                    configuration.getXml(),
+                    configuration,
                     executionEnvironment(project, mavenSession, pluginManager)
             );
         } catch (MojoExecutionException e) {
             log.error("Failed to generate server stubbing", e);
             throw e;
         }
-        log.debug("Generated stubbing with configuration: {}", configuration);
 
-        log.debug("Adding compile source root: {}", configuration.getOutputDirectory());
-        project.addCompileSourceRoot(configuration.getOutputDirectory().toString());
+        var compileSourceRoot = Utils.getCompileSourceRoot(project);
+        log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Adding compile source root: {}", compileSourceRoot);
+        project.addCompileSourceRoot(compileSourceRoot.toString());
 
 
         if (autoGitignore) {
             try {
                 autoGitIgnoreArtifacts();
             } catch (IOException e) {
-                log.debug("Failed to automatically ignore fetched specs", e);
+                log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Failed to automatically ignore fetched specs", e);
             }
         }
     }
@@ -122,7 +121,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
     }
 
-    private Configuration configuration(YapilyApi api) throws MojoExecutionException {
+    private Xpp3Dom configuration(YapilyApi api) throws MojoExecutionException {
         Xpp3Dom openapiMavenPluginConfiguration;
         try (var is = getClass().getResourceAsStream("/openapi-generator.configuration.xml")) {
             if (is == null) {
@@ -136,10 +135,13 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         var outputDirectory = Utils.getServerStubbing(project);
         openapiMavenPluginConfiguration.addChild(element("output", outputDirectory.toString()).toDom());
+        var configOptions = openapiMavenPluginConfiguration.getChild("configOptions");
+        if (configOptions == null) throw new MojoExecutionException("Invalid openapi-generator configuration. configOptions missing");
+        configOptions.addChild(element("sourceFolder", Utils.getRelativeGeneratedSourceFolder().toString()).toDom());
 
         if (openapiConfigurationOverrides != null) {
             log.info("Merging user-defined openapi-generator configuration");
-            log.debug("\t config {}", openapiConfigurationOverrides);
+            log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"\t config {}", openapiConfigurationOverrides);
 
             openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(
                     openapiMavenPluginConfiguration,
@@ -150,7 +152,7 @@ public class ApiGenerateMojo extends AbstractMojo {
         // add the inputSpec (-i) path (from the yapily-api local-repo)
         openapiMavenPluginConfiguration.addChild(element("inputSpec", Utils.getSpec(api, project).toString()).toDom());
 
-        return new Configuration(openapiMavenPluginConfiguration, outputDirectory);
+        return openapiMavenPluginConfiguration;
     }
 
     private void fetchApi(YapilyApi api) throws MojoExecutionException {
@@ -163,9 +165,3 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
     }
 }
-
-@Value class Configuration {
-    Xpp3Dom xml;
-    Path outputDirectory;
-}
-

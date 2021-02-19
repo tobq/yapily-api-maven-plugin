@@ -23,6 +23,13 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 @UtilityClass
 class Utils {
 
+    private final Path RELATIVE_GENERATED_SOURCE_FOLDER_ROOT = Path.of("src");
+    private final Path RELATIVE_GENERATED_SOURCE_FOLDER = RELATIVE_GENERATED_SOURCE_FOLDER_ROOT.resolve("main/java");
+
+    public static Path getRelativeGeneratedSourceFolder() {
+        return RELATIVE_GENERATED_SOURCE_FOLDER;
+    }
+
     Path getPath(YapilyApi api, MavenProject project) {
         return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
     }
@@ -96,7 +103,8 @@ class Utils {
             try {
                 Utils.cleanSpecLocalGitRepository(api, project);
             } catch (IOException ignored) {
-                log.debug("Failed to clean local specification for {} after failing to fetch it", api);
+                log.info(/* TODO: https://stackoverflow.com/questions/26526403/maven-debug-mode-only-for-one-plugin/40386046#comment117175109_40386046 */"Failed to clean local specification for {} after failing to fetch it",
+                                                                                                                                                         api);
             }
             log.error("Failed to fetch {}: ", api, e);
             throw new MojoExecutionException("Failed to fetch: " + api, e);
@@ -131,5 +139,9 @@ class Utils {
                                 .toArray(MojoExecutor.Element[]::new);
 
         return new MojoExecutor.Element(name, children);
+    }
+
+    static Path getCompileSourceRoot(MavenProject project) {
+        return getServerStubbing(project).resolve(RELATIVE_GENERATED_SOURCE_FOLDER_ROOT);
     }
 }
