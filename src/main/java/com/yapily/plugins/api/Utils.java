@@ -25,7 +25,7 @@ class Utils {
     }
 
     Path getSpec(YapilyApi api, MavenProject project) {
-        return getPath(api, project).resolve("api.yml");
+        return getPath(api, project).resolve("openapi.yml");
     }
 
     /**

@@ -13,7 +13,7 @@ Automatically handles API server stub generation, for service implementations
     <artifactId>yapily-api-implementation-maven-plugin</artifactId>
     <configuration>
         <apiType>yapily-platform-consent-service</apiType>
-        <apiVersion>0.0.3</apiVersion>
+        <apiVersion>0.0.4</apiVersion>
     </configuration>
 </plugin>
 ```
