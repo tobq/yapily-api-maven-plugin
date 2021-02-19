@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -42,7 +43,7 @@ public class ApiGenerateMojo extends AbstractMojo {
     @Parameter(property = "version.openapi-generator", defaultValue = "5.0.1")
     String openapiGeneratorVersion;
     @Parameter
-    Xpp3Dom openapiConfigurationOverrides;
+    private Map<?, ?> openapiConfigurationOverrides;
     @Component
     private MavenProject project;
     @Component
@@ -127,7 +128,12 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         if (openapiConfigurationOverrides != null) {
             log.info("Merging user-defined openapi-generator configuration");
-            openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(openapiMavenPluginConfiguration, openapiConfigurationOverrides);
+            log.debug("\t config {}", openapiConfigurationOverrides);
+
+            openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(
+                    openapiMavenPluginConfiguration,
+                    Utils.buildElement((Map<String, Object>) openapiConfigurationOverrides, "configuration").toDom()
+            );
         }
 
         // add the inputSpec (-i) path (from the yapily-api local-repo)

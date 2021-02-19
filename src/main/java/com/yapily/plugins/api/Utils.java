@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -12,9 +13,11 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 
 @Slf4j
 @UtilityClass
@@ -98,5 +101,25 @@ class Utils {
             log.error("Failed to fetch {}: ", api, e);
             throw new MojoExecutionException("Failed to fetch: " + api, e);
         }
+    }
+
+    static MojoExecutor.Element buildElement(Map<String, Object> parameter, String name) {
+        var children = parameter.entrySet()
+                                .stream()
+                                .map(entry -> {
+                                    var o = entry.getValue();
+                                    var childName = entry.getKey();
+
+                                    if (o instanceof String) {
+                                        return element(childName, (String) o);
+                                    } else if (o instanceof Map) {
+                                        return element(childName, buildElement((Map<String, Object>) o, childName));
+                                    } else {
+                                        return element(childName);
+                                    }
+                                })
+                                .toArray(MojoExecutor.Element[]::new);
+
+        return new MojoExecutor.Element(name, children);
     }
 }
