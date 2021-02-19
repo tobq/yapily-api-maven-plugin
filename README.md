@@ -40,10 +40,10 @@ mvn yapily-api:fetch
 
 Fetches API from yapily-api bitbucket repository
 
-### Clean
-
+### Clean Specifications
 ```shell
-mvn yapily-api:clean
+mvn yapily-api:clean-spec
 ```
- leans the downloaded specifications (not automatically cleaned during the `clean` phase, to allow offline cleaning/re-compilation)
+Cleans the downloaded specifications
+- This was left out of the `clean` phase, to allow one to clean and then recompile, while offline
 

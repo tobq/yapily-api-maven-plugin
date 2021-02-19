@@ -7,15 +7,16 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Mojo(name = "clean")
+@Mojo(name = "clean", defaultPhase = LifecyclePhase.CLEAN)
 @Slf4j
-public class CleanMojo extends AbstractMojo {
+public class CleanSpecMojo extends AbstractMojo {
     @Parameter(property = "openapi-generator.version")
     String openapiGeneratorVersion;
     @Component
@@ -27,7 +28,7 @@ public class CleanMojo extends AbstractMojo {
 
     @Override public void execute() throws MojoExecutionException {
         try {
-            Utils.cleanServerStubbing(project);
+            Utils.cleanSpecParent(project);
         } catch (IOException e) {
             log.error("Failed to clean", e);
             throw new MojoExecutionException("Failed to clean", e);
