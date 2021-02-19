@@ -71,7 +71,9 @@ public class ApiGenerateMojo extends AbstractMojo {
             log.error("Failed to generate server stubbing", e);
             throw e;
         }
+        log.debug("Generated stubbing with configuration: {}", configuration);
 
+        log.debug("Adding compile source root: {}", configuration.getOutputDirectory());
         project.addCompileSourceRoot(configuration.getOutputDirectory().toString());
 
 
@@ -161,7 +163,6 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
     }
 }
-
 
 @Value class Configuration {
     Xpp3Dom xml;
