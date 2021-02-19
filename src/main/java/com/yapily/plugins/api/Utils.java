@@ -132,24 +132,4 @@ class Utils {
 
         return new MojoExecutor.Element(name, children);
     }
-
-    static MojoExecutor.Element buildElement(Map<String, Object> parameter, String name) {
-        var children = parameter.entrySet()
-                                .stream()
-                                .map(entry -> {
-                                    var o = entry.getValue();
-                                    var childName = entry.getKey();
-
-                                    if (o instanceof String) {
-                                        return element(childName, (String) o);
-                                    } else if (o instanceof Map) {
-                                        return element(childName, buildElement((Map<String, Object>) o, childName));
-                                    } else {
-                                        return element(childName);
-                                    }
-                                })
-                                .toArray(MojoExecutor.Element[]::new);
-
-        return new MojoExecutor.Element(name, children);
-    }
 }
