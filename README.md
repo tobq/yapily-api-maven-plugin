@@ -1,6 +1,6 @@
 # `yapily-api-implementation-maven-plugin`
 
-Automatically handles API server stub generation
+Automatically handles API server stub generation, for service implementations
 
 # Usage
 
