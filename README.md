@@ -37,6 +37,13 @@ mvn yapily-api:fetch
 
 Fetches API from yapily-api bitbucket repository
 
+### Clean
+```shell
+mvn yapily-api:clean
+```
+Cleans the auto-generated server stubbing
+- Automatically runs as part of the `clean` phase
+
 ### Clean Specifications
 ```shell
 mvn yapily-api:clean-spec
