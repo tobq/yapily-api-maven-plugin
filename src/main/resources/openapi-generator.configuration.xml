@@ -5,6 +5,9 @@
         <modelPackage>com.yapily.model</modelPackage>
 
         <java8>true</java8>
+        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+        <openApiNullable>false</openApiNullable>
+        <useTags>true</useTags>
         <reactive>true</reactive>
         <useOptional>true</useOptional>
 
