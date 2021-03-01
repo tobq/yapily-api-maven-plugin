@@ -103,8 +103,7 @@ class Utils {
             try {
                 Utils.cleanSpecLocalGitRepository(api, project);
             } catch (IOException ignored) {
-                log.debug("Failed to clean local specification for {} after failing to fetch it",
-                                                                                                                                                         api);
+                log.debug("Failed to clean local specification for {} after failing to fetch it", api);
             }
             log.error("Failed to fetch {}: ", api, e);
             throw new MojoExecutionException("Failed to fetch: " + api, e);

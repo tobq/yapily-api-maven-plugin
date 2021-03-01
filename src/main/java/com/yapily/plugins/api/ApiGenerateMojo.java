@@ -29,6 +29,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 
 @Slf4j
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
@@ -38,6 +39,8 @@ public class ApiGenerateMojo extends AbstractMojo {
     String apiVersion;
     @Parameter(required = true)
     String apiType;
+    @Parameter
+    String localSpecPath;
     @Parameter(defaultValue = "true")
     boolean autoGitignore;
     @Parameter(property = "version.openapi-generator", defaultValue = "5.0.1")
@@ -55,13 +58,15 @@ public class ApiGenerateMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         var api = new YapilyApi(apiType, apiVersion);
 
-        fetchApi(api);
+        if (!localMode()) {
+            fetchApi(api);
+        }
 
         var configuration = configuration(api);
         log.debug("Generating stubbing using configuration: {}", configuration);
         try {
             executeMojo(
-                    MojoExecutor.plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
+                    plugin("org.openapitools", "openapi-generator-maven-plugin", openapiGeneratorVersion),
                     goal("generate"),
                     configuration,
                     executionEnvironment(project, mavenSession, pluginManager)
@@ -113,7 +118,7 @@ public class ApiGenerateMojo extends AbstractMojo {
                     os.newLine();
                     os.write(specParentIgnoreEntry);
                     os.newLine();
-                    os.write("openapitools.json");
+                    os.write(openapitoolsEnrty);
                     os.newLine();
                     os.write(GITIGNORE_ENTRIES_SUFFIX);
                 }
@@ -150,9 +155,15 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
 
         // add the inputSpec (-i) path (from the yapily-api local-repo)
-        openapiMavenPluginConfiguration.addChild(element("inputSpec", Utils.getSpec(api, project).toString()).toDom());
+        String specPath = localMode() ?
+                          localSpecPath : Utils.getSpec(api, project).toString();
+        openapiMavenPluginConfiguration.addChild(element("inputSpec", specPath).toDom());
 
         return openapiMavenPluginConfiguration;
+    }
+
+    private boolean localMode() {
+        return localSpecPath != null;
     }
 
     private void fetchApi(YapilyApi api) throws MojoExecutionException {
