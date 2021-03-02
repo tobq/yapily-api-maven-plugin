@@ -28,11 +28,11 @@ jobs:
         uses: sonatype-nexus-community/nexus-repo-github-action@1.0.0
         with:
           # Nexus Repository Server URL
-          serverUrl: $NEXUS_SERVER_URL
+          serverUrl: ${{ secrets.NEXUS_SERVER_URL }}
           # Username to connect to Nexus Repo to publish components
-          username: $NEXUS_SERVER_USERNAME
+          username: ${{ secrets.NEXUS_SERVER_USERNAME }}
           # Password to connect to Nexus Repo to publish components
-          password: $NEXUS_SERVER_PASSWORD
+          password: ${{ secrets.NEXUS_SERVER_PASSWORD }}
           # Component format e.g. maven2
           format: maven2
           # Name of target repository on Nexus Repo e.g. maven-releases
