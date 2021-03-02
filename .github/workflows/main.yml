@@ -19,6 +19,11 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+      # https://github.com/sonatype-nexus-community/nexus-repo-github-action/issues/2
+      ARTIFACT_ID: yapily-api-implementation-maven-plugin
+      ARTIFACT_GROUP_ID: com.yapily
+      ARTIFACT_VERSION: 1.0.7
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,6 +34,8 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn package --file pom.xml
+      - name: LOG TARGET 
+        run: ls ./target
       - name: Publish to Nexus Repository
         # You may pin to the exact commit or the version.
         # uses: sonatype-nexus-community/nexus-repo-github-action@f8178e57b79477b7b98b1ae94a4d77ba9c1bf731
@@ -45,8 +52,8 @@ jobs:
           # Name of target repository on Nexus Repo e.g. maven-releases
           repository: maven-releases
           # Component coordinates in key=value format. e.g. groupId=com.example artifactId=app version=1.0.0
-          coordinates:  groupId=com.yapily artifactId=yapily-api-implementation-maven-plugin version=1.0.7 # https://github.com/sonatype-nexus-community/nexus-repo-github-action/issues/2
+          coordinates:  groupId=$ARTIFACT_GROUP_ID artifactId=$ARTIFACT_ID version=$ARTIFACT_VERSION 
           # Component assets in key=value format. e.g. extension=jar
           assets: extension=jar
           # File to publish
-          filename:  ./target/yapily-api-implementation-maven-plugin-1.0.7.jar 
+          filename: ./target/$ARTIFACT_ID-$ARTIFACT_VERSION.jar
