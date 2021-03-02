@@ -52,8 +52,8 @@ jobs:
           # Name of target repository on Nexus Repo e.g. maven-releases
           repository: maven-releases
           # Component coordinates in key=value format. e.g. groupId=com.example artifactId=app version=1.0.0
-          coordinates:  groupId=${{ARTIFACT_GROUP_ID}} artifactId=${{ARTIFACT_ID}} version=${{ARTIFACT_VERSION}} 
+          coordinates:  groupId=${{env.ARTIFACT_GROUP_ID}} artifactId=${{env.ARTIFACT_ID}} version=${{env.ARTIFACT_VERSION}} 
           # Component assets in key=value format. e.g. extension=jar
           assets: extension=jar
           # File to publish
-          filename: ./target/${{$ARTIFACT_ID}}-$${{ARTIFACT_VERSION}}.jar
+          filename: ./target/${{env.$ARTIFACT_ID}}-$${{env.ARTIFACT_VERSION}}.jar
