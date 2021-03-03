@@ -24,8 +24,8 @@ Automatically handles API server stub generation, for service implementations
 </plugin>
 ```
 ### Debug configOptions
-You can use `<gitUrl/>` to override the default git repository to clone from
-You can also use `<localSpecPath/>` to skip cloning, and develop using a locally managed api
+* You can use `<gitUrl/>` to override the default git repository to clone from
+* You can also use `<localSpecPath/>` to skip cloning, and develop using a locally managed api
 
 ### Generate stubbing
 
