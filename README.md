@@ -22,10 +22,10 @@ Automatically handles API server stub generation, for service implementations
         </execution>
     </executions>
 </plugin>
-
+```
+### Debug configOptions
 You can use `<gitUrl/>` to override the default git repository to clone from
 You can also use `<localSpecPath/>` to skip cloning, and develop using a locally managed api
-```
 
 ### Generate stubbing
 
