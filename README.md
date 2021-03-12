@@ -14,7 +14,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
     <executions>
         <execution>
             <goals>
-                <goal>generate-server</goal>
+                <id>generate-server</id>
+                <goal>generate</goal>
             </goals>
             <configuration>
                 <serverApi>
@@ -25,7 +26,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
         </execution>
         <execution>
             <goals>
-                <goal>generate-client</goal>
+                <id>generate-client</id>
+                <goal>generate</goal>
             </goals>
             <configuration>
                 <clientApi>
