@@ -1,4 +1,4 @@
-# `yapily-api-implementation-maven-plugin`
+# `yapily-api-maven-plugin`
 
 Automatically handles API server stub generation, for service implementations
 
@@ -9,7 +9,7 @@ Automatically handles API server stub generation, for service implementations
 ```xml
 <plugin>
     <groupId>com.yapily</groupId>
-    <artifactId>yapily-api-implementation-maven-plugin</artifactId>
+    <artifactId>yapily-api-maven-plugin</artifactId>
     <executions>
         <execution>
             <goals>
@@ -28,7 +28,7 @@ Automatically handles API server stub generation, for service implementations
 ### Generate stubbing
 
 ```shell
-mvn yapily-api-implementation:generate
+mvn yapily-api:generate
 ```
 Fetches (cached) API, before generating the server stubbing using the OpenAPI spec
 - `generate` automatically runs during the `generate-sources` phase (so you do not need to explicitly execute them to get started)
@@ -37,21 +37,21 @@ Fetches (cached) API, before generating the server stubbing using the OpenAPI sp
 ### Fetch Specification
 
 ```shell
-mvn yapily-api-implementation:fetch
+mvn yapily-api:fetch
 ```
 
 Fetches API from yapily-api bitbucket repository
 
 ### Clean
 ```shell
-mvn yapily-api-implementation:clean
+mvn yapily-api:clean
 ```
 Cleans the auto-generated server stubbing
 - Automatically runs as part of the `clean` phase
 
 ### Clean Specifications
 ```shell
-mvn yapily-api-implementation:clean-specs
+mvn yapily-api:clean-specs
 ```
 Cleans the downloaded specifications
 - This was left out of the `clean` phase, to allow one to clean and then recompile, while offline
