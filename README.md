@@ -16,8 +16,8 @@ Automatically handles API server stub generation, for service implementations
                 <goal>generate</goal>
             </goals>
             <configuration>
-                <apiType>yapily-platform-consent-service</apiType>
-                <apiVersion>0.0.4</apiVersion>
+                <apiType>yapily-platform-security</apiType>
+                <apiVersion>0.0.6</apiVersion>
             </configuration>
         </execution>
     </executions>
