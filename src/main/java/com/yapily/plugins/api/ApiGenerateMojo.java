@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 import org.apache.maven.execution.MavenSession;
@@ -22,7 +23,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
-import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -32,15 +32,16 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 
 @Slf4j
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class ApiGenerateMojo extends AbstractMojo {
     public static final String GITIGNORE_ENTRIES_SUFFIX = "### END OF AUTO-GENERATION yapily-api-implementation-maven-plugin";
-    @Parameter(required = true)
-    String apiVersion;
-    @Parameter(required = true)
-    String apiType;
+
     @Parameter
-    String localSpecPath;
+    Map<String, Object> serverApi;
+    @Parameter
+    Map<String, Object> clientApi;
+    @Parameter
+    String gitUrl;
     @Parameter(defaultValue = "true")
     boolean autoGitignore;
     @Parameter(property = "version.openapi-generator", defaultValue = "5.0.1")
@@ -56,13 +57,39 @@ public class ApiGenerateMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        var api = new YapilyApi(apiType, apiVersion);
+        if (serverApi != null) {
+            generate(serverApi, "/openapi-generator.configuration.server.xml");
+        }
+        if (clientApi != null) {
+            var compileSourceRoot = generate(clientApi, "/openapi-generator.configuration.client.xml");
+            try {
+                Utils.cleanDirectoryIfExists(compileSourceRoot.resolve("test"));
+            } catch (IOException e) {
+                throw new MojoExecutionException("Failed to clean generated tests: " + e.getClass().getName() + ": " + e.getMessage(), e);
+            }
+        }
 
-        if (!localMode()) {
+
+        if (autoGitignore) {
+            try {
+                autoGitIgnoreArtifacts();
+            } catch (IOException e) {
+                log.debug("Failed to automatically ignore fetched specs", e);
+            }
+        }
+    }
+
+    private Path generate(Map<String, Object> apiParam, String s) throws MojoExecutionException {
+        var api = new YapilyApi((String) apiParam.get("type"), (String) apiParam.get("version"));
+        var localSpecPath = (String) apiParam.get("localSpecPath");
+
+        String specPath = localSpecPath != null ? localSpecPath : Utils.getSpec(api, project).toString();
+        var configuration = configuration(specPath, s);
+
+        if (localSpecPath == null) {
             fetchApi(api);
         }
 
-        var configuration = configuration(api);
         log.debug("Generating stubbing using configuration: {}", configuration);
         try {
             executeMojo(
@@ -78,16 +105,10 @@ public class ApiGenerateMojo extends AbstractMojo {
 
         var compileSourceRoot = Utils.getCompileSourceRoot(project);
         log.debug("Adding compile source root: {}", compileSourceRoot);
+
         project.addCompileSourceRoot(compileSourceRoot.toString());
 
-
-        if (autoGitignore) {
-            try {
-                autoGitIgnoreArtifacts();
-            } catch (IOException e) {
-                log.debug("Failed to automatically ignore fetched specs", e);
-            }
-        }
+        return compileSourceRoot;
     }
 
     private void autoGitIgnoreArtifacts() throws IOException {
@@ -104,12 +125,12 @@ public class ApiGenerateMojo extends AbstractMojo {
                 var specParentIgnoreEntry = gitRepo
                         .relativize(Utils.getSpecParent(project))
                         .toString()
-                        .replaceAll("\\\\", "/");
+                        .replace("\\", "/");
                 var openapitoolsPath = project.getBasedir().toPath().resolve("openapitools.json");
                 var openapitoolsEnrty = gitRepo
                         .relativize(openapitoolsPath)
                         .toString()
-                        .replaceAll("\\\\", "/");
+                        .replace("\\", "/");
 
 
                 try (var br = new BufferedReader(new FileReader(gitIgnorePath.toFile()))) {
@@ -133,9 +154,33 @@ public class ApiGenerateMojo extends AbstractMojo {
         }
     }
 
-    private Xpp3Dom configuration(YapilyApi api) throws MojoExecutionException {
+    private Xpp3Dom configuration(String specPath, String configResourcePath) throws MojoExecutionException {
+        Xpp3Dom openapiMavenPluginConfiguration = readConfig(configResourcePath);
+        var outputDirectory = Utils.getGeneratedSources(project);
+        openapiMavenPluginConfiguration.addChild(element("output", outputDirectory.toString()).toDom());
+        var configOptions = openapiMavenPluginConfiguration.getChild("configOptions");
+        if (configOptions == null) throw new MojoExecutionException("Invalid openapi-generator configuration. configOptions missing");
+        configOptions.addChild(element("sourceFolder", Utils.RELATIVE_GENERATED_SOURCE_FOLDER.toString()).toDom());
+
+        //        if (openapiConfigurationOverrides != null) {
+        //            log.info("Merging user-defined openapi-generator configuration");
+        //            log.debug("\t config {}", openapiConfigurationOverrides);
+        //
+        //            openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(
+        //                    openapiMavenPluginConfiguration,
+        //                    Utils.buildElement((Map<String, Object>) openapiConfigurationOverrides, "configuration").toDom()
+        //            );
+        //        }
+
+        // add the inputSpec (-i) path (from the yapily-api local-repo)
+        openapiMavenPluginConfiguration.addChild(element("inputSpec", specPath).toDom());
+
+        return openapiMavenPluginConfiguration;
+    }
+
+    private Xpp3Dom readConfig(String s) throws MojoExecutionException {
         Xpp3Dom openapiMavenPluginConfiguration;
-        try (var is = getClass().getResourceAsStream("/openapi-generator.configuration.xml")) {
+        try (var is = getClass().getResourceAsStream(s)) {
             if (is == null) {
                 throw new IOException("Failed to obtain embdedded openapi-generator configuration");
             }
@@ -144,42 +189,16 @@ public class ApiGenerateMojo extends AbstractMojo {
             log.error("Failed to parse embedded openapi-generator configuration", e);
             throw new MojoExecutionException("Failed to parse embedded openapi-generator configuration", e);
         }
-
-        var outputDirectory = Utils.getServerStubbing(project);
-        openapiMavenPluginConfiguration.addChild(element("output", outputDirectory.toString()).toDom());
-        var configOptions = openapiMavenPluginConfiguration.getChild("configOptions");
-        if (configOptions == null) throw new MojoExecutionException("Invalid openapi-generator configuration. configOptions missing");
-        configOptions.addChild(element("sourceFolder", Utils.getRelativeGeneratedSourceFolder().toString()).toDom());
-
-        if (openapiConfigurationOverrides != null) {
-            log.info("Merging user-defined openapi-generator configuration");
-            log.debug("\t config {}", openapiConfigurationOverrides);
-
-            openapiMavenPluginConfiguration = Xpp3Dom.mergeXpp3Dom(
-                    openapiMavenPluginConfiguration,
-                    Utils.buildElement((Map<String, Object>) openapiConfigurationOverrides, "configuration").toDom()
-            );
-        }
-
-        // add the inputSpec (-i) path (from the yapily-api local-repo)
-        String specPath = localMode() ?
-                          localSpecPath : Utils.getSpec(api, project).toString();
-        openapiMavenPluginConfiguration.addChild(element("inputSpec", specPath).toDom());
-
         return openapiMavenPluginConfiguration;
     }
 
-    private boolean localMode() {
-        return localSpecPath != null;
-    }
-
     private void fetchApi(YapilyApi api) throws MojoExecutionException {
-        log.info("Fetching {}", api);
+        log.info("Checking cache for {}", api);
 
-        if (Utils.isGitRepository(Utils.getPath(api, project))) {
+        if (Utils.isGitRepository(Utils.getApiRepositoryPath(api, project))) {
             log.info("\t{} already cached", api);
         } else {
-            Utils.fetchApi(api, project);
+            Utils.fetchApi(api, project, gitUrl);
         }
     }
 }

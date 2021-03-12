@@ -13,7 +13,10 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
+
+import com.google.common.base.Nullable;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +27,14 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 class Utils {
 
     private final Path RELATIVE_GENERATED_SOURCE_FOLDER_ROOT = Path.of("src");
-    private final Path RELATIVE_GENERATED_SOURCE_FOLDER = RELATIVE_GENERATED_SOURCE_FOLDER_ROOT.resolve("main/java");
+    public final Path RELATIVE_GENERATED_SOURCE_FOLDER = RELATIVE_GENERATED_SOURCE_FOLDER_ROOT.resolve("main/java");
 
-    public static Path getRelativeGeneratedSourceFolder() {
-        return RELATIVE_GENERATED_SOURCE_FOLDER;
-    }
-
-    Path getPath(YapilyApi api, MavenProject project) {
+    Path getApiRepositoryPath(YapilyApi api, MavenProject project) {
         return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
     }
 
     Path getSpec(YapilyApi api, MavenProject project) {
-        return getPath(api, project).resolve("openapi.yml");
+        return getApiRepositoryPath(api, project).resolve("openapi.yml");
     }
 
     /**
@@ -51,7 +50,7 @@ class Utils {
     }
 
     void cleanSpecLocalGitRepository(YapilyApi api, MavenProject project) throws IOException {
-        cleanDirectoryIfExists(getPath(api, project));
+        cleanDirectoryIfExists(getApiRepositoryPath(api, project));
     }
 
     void cleanSpecParent(MavenProject project) throws IOException {
@@ -82,19 +81,20 @@ class Utils {
                        .getGitDir() != null;
     }
 
-    static void fetchApi(YapilyApi api, MavenProject project) throws MojoExecutionException {
+    static void fetchApi(YapilyApi api, MavenProject project, @Nullable String gitUrl) throws MojoExecutionException {
         try {
             log.info("Fetching {}", api);
-            Path outputPath = getPath(api, project);
-            String apiGitUrl = api.getGitUrl();
+            Path outputPath = getApiRepositoryPath(api, project);
 
             if (cleanDirectoryIfExists(outputPath)) {
                 log.info("Cleaned up invalid git repository at: {}", outputPath);
             }
 
+            String apiGitUrl = gitUrl == null ? api.getGitUrl() : gitUrl;
             log.info("Cloning {} into {}", apiGitUrl, outputPath);
             Git.cloneRepository()
                .setURI(apiGitUrl)
+               .setCredentialsProvider(CredentialsProvider.getDefault())
                .setBranch("refs/tags/" + api.getVersionTag())
                .setDirectory(outputPath.toFile())
                .call()
@@ -111,10 +111,10 @@ class Utils {
     }
 
     static void cleanServerStubbing(MavenProject project) throws IOException {
-        cleanDirectoryIfExists(getServerStubbing(project));
+        cleanDirectoryIfExists(getGeneratedSources(project));
     }
 
-    static Path getServerStubbing(MavenProject project) {
+    static Path getGeneratedSources(MavenProject project) {
         return Path.of(project.getBuild().getDirectory())
                    .resolve("generated-sources")
                    .resolve("yapily-api");
@@ -141,6 +141,6 @@ class Utils {
     }
 
     static Path getCompileSourceRoot(MavenProject project) {
-        return getServerStubbing(project).resolve(RELATIVE_GENERATED_SOURCE_FOLDER_ROOT);
+        return getGeneratedSources(project).resolve(RELATIVE_GENERATED_SOURCE_FOLDER_ROOT);
     }
 }
