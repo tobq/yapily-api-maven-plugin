@@ -13,8 +13,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
     <artifactId>yapily-api-maven-plugin</artifactId>
     <executions>
         <execution>
+            <id>generate-server</id>
             <goals>
-                <id>generate-server</id>
                 <goal>generate</goal>
             </goals>
             <configuration>
@@ -25,8 +25,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
             </configuration>
         </execution>
         <execution>
+            <id>generate-client</id>
             <goals>
-                <id>generate-client</id>
                 <goal>generate</goal>
             </goals>
             <configuration>
