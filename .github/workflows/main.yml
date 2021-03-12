@@ -56,4 +56,4 @@ jobs:
           # Component assets in key=value format. e.g. extension=jar
           assets: extension=jar
           # File to publish
-          filename: ./target/${{env.ARTIFACT_ID}}-$${{env.ARTIFACT_VERSION}}.jar
+          filename: ./target/${{env.ARTIFACT_ID}}-${{env.ARTIFACT_VERSION}}.jar
