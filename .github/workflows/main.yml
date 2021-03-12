@@ -23,7 +23,7 @@ jobs:
       # https://github.com/sonatype-nexus-community/nexus-repo-github-action/issues/2
       ARTIFACT_ID: yapily-api-implementation-maven-plugin
       ARTIFACT_GROUP_ID: com.yapily
-      ARTIFACT_VERSION: 1.0.7
+      ARTIFACT_VERSION: 1.0.10
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
