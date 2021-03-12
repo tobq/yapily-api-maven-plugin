@@ -18,8 +18,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
             </goals>
             <configuration>
                 <serverApi>
-                    <apiType>yapily-platform-security</apiType>
-                    <apiVersion>0.0.6</apiVersion>
+                    <type>yapily-platform-security</type>
+                    <version>0.0.6</version>
                 </serverApi>
             </configuration>
         </execution>
@@ -29,8 +29,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
             </goals>
             <configuration>
                 <clientApi>
-                    <apiType>yapily-server-images</apiType>
-                    <apiVersion>0.0.2</apiVersion>
+                    <type>yapily-server-images</type>
+                    <version>0.0.2</version>
                 </clientApi>
             </configuration>
         </execution>
