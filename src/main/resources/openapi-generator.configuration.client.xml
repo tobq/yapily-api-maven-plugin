@@ -1,0 +1,34 @@
+<configuration>
+    <generatorName>java</generatorName>
+    <configOptions>
+        <apiPackage>com.yapily.sdk.api</apiPackage>
+        <modelPackage>com.yapily.sdk.model</modelPackage>
+
+        <java8>true</java8>
+        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor @lombok.NoArgsConstructor</additionalModelTypeAnnotations>
+        <openApiNullable>false</openApiNullable>
+        <useTags>true</useTags>
+        <reactive>true</reactive>
+        <useOptional>true</useOptional>
+        <library>webclient</library>
+
+        <interfaceOnly>true</interfaceOnly>
+        <!--                                <skipDefaultInterface>true</skipDefaultInterface>-->
+
+        <dateLibrary>java8</dateLibrary>
+        <!--                                <dateLibrary>custom</dateLibrary>-->
+        <!--                                <jsr310>true</jsr310>-->
+        <!--        <typeMappings>-->
+        <!--            <typeMapping>date=LocalDate</typeMapping>-->
+        <!--            <typeMapping>date-time=Instant</typeMapping>-->
+        <!--            <typeMapping>java.util.Date=LocalDate</typeMapping>-->
+        <!--            <typeMapping>org.joda.time.DateTime=Instant</typeMapping>-->
+        <!--            <typeMapping>Date=LocalDate</typeMapping>-->
+        <!--            <typeMapping>DateTime=Instant</typeMapping>-->
+        <!--        </typeMappings>-->
+        <!--        <importMappings>-->
+        <!--            <importMapping>Instant=java.time.Instant</importMapping>-->
+        <!--            <importMapping>LocalDate=java.time.LocalDate</importMapping>-->
+        <!--        </importMappings>-->
+    </configOptions>
+</configuration>
