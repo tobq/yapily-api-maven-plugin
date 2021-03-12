@@ -16,12 +16,14 @@ public class FetchMojo extends AbstractMojo {
     String apiVersion;
     @Parameter(required = true)
     String apiType;
+    @Parameter
+    String gitUrl;
     @Component
     private MavenProject project;
 
     @Override public void execute() throws MojoExecutionException {
         var api = new YapilyApi(apiType, apiVersion);
-        Utils.fetchApi(api, project);
+        Utils.fetchApi(api, project, gitUrl);
     }
 
 }
