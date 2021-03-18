@@ -16,8 +16,6 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
-import com.google.common.base.Nullable;
-
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
@@ -25,7 +23,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 @Slf4j
 @UtilityClass
 class Utils {
-
+    public static final String DEFAULT_GIT_BRANCH_TEMPLATE = "refs/tags/v{{apiVersion}}";
     private final Path RELATIVE_GENERATED_SOURCE_FOLDER_ROOT = Path.of("src");
     public final Path RELATIVE_GENERATED_SOURCE_FOLDER = RELATIVE_GENERATED_SOURCE_FOLDER_ROOT.resolve("main/java");
 
@@ -33,8 +31,8 @@ class Utils {
         return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
     }
 
-    Path getSpec(YapilyApi api, MavenProject project) {
-        return getApiRepositoryPath(api, project).resolve("openapi.yml");
+    Path getSpec(YapilyApi api, MavenProject project, String apiSpecPath) {
+        return getApiRepositoryPath(api, project).resolve(apiSpecPath);
     }
 
     /**
@@ -81,7 +79,7 @@ class Utils {
                        .getGitDir() != null;
     }
 
-    static void fetchApi(YapilyApi api, MavenProject project, @Nullable String gitUrl) throws MojoExecutionException {
+    static void fetchApi(YapilyApi api, MavenProject project, String gitUrlTemplate, String gitBranchTemplate) throws MojoExecutionException {
         try {
             log.info("Fetching {}", api);
             Path outputPath = getApiRepositoryPath(api, project);
@@ -90,12 +88,14 @@ class Utils {
                 log.info("Cleaned up invalid git repository at: {}", outputPath);
             }
 
-            String apiGitUrl = gitUrl == null ? api.getGitUrl() : gitUrl;
-            log.info("Cloning {} into {}", apiGitUrl, outputPath);
+            var apiGitUrl = gitUrlTemplate.replace("{{apiName}}", api.getName());
+            var apiGitBranch = gitBranchTemplate.replace("{{apiVersion}}", api.getVersion());
+            log.info("Cloning {}:{} into {}", apiGitUrl, apiGitBranch, outputPath);
+
             Git.cloneRepository()
                .setURI(apiGitUrl)
                .setCredentialsProvider(CredentialsProvider.getDefault())
-               .setBranch("refs/tags/" + api.getVersionTag())
+               .setBranch(apiGitBranch)
                .setDirectory(outputPath.toFile())
                .call()
                .close();

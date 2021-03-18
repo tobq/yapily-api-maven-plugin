@@ -15,16 +15,18 @@ public class FetchMojo extends AbstractMojo {
     @Parameter(required = true)
     String apiVersion;
     @Parameter(required = true)
-    String apiType;
-    @Parameter
-    String gitUrl;
+    String apiName;
+    @Parameter(readonly = true)
+    String gitUrlTemplate;
+    @Parameter(defaultValue = Utils.DEFAULT_GIT_BRANCH_TEMPLATE)
+    String gitBranchTemplate;
     @Component
     private MavenProject project;
 
-    @Override public void execute() throws MojoExecutionException {
-        var api = new YapilyApi(apiType, apiVersion);
-        Utils.fetchApi(api, project, gitUrl);
+    @Override
+    public void execute() throws MojoExecutionException {
+        var api = new YapilyApi(apiName, apiVersion);
+        Utils.fetchApi(api, project, gitUrlTemplate, gitBranchTemplate);
     }
-
 }
 
