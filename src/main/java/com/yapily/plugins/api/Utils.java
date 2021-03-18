@@ -24,6 +24,7 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 @UtilityClass
 class Utils {
     public static final String DEFAULT_GIT_BRANCH_TEMPLATE = "refs/tags/v{{apiVersion}}";
+    public static final String DEFAULT_GIT_URL_TEMPLATE = "git@bitbucket.org:yapily/{{apiName}}-api.git";
     private final Path RELATIVE_GENERATED_SOURCE_FOLDER_ROOT = Path.of("src");
     public final Path RELATIVE_GENERATED_SOURCE_FOLDER = RELATIVE_GENERATED_SOURCE_FOLDER_ROOT.resolve("main/java");
 

@@ -28,7 +28,7 @@ public class GenerateServerMojo extends AbstractMojo {
     @Nullable
     @Parameter
     String localSpecPath;
-    @Parameter(required = true)
+    @Parameter(defaultValue = Utils.DEFAULT_GIT_URL_TEMPLATE)
     String gitUrlTemplate;
     @Parameter(defaultValue = Utils.DEFAULT_GIT_BRANCH_TEMPLATE)
     String gitBranchTemplate;
