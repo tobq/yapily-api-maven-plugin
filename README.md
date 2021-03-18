@@ -37,7 +37,8 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
 
 ### Debug `<configuration/>` parameters
 
-* You can use `<gitUrl/>` to override the default git repository to clone from
+* You can use `<gitUrlTemplate/>` to override the default git repository to clone from (using `{{apiName}}` template param)
+* You can use `<gitBranchTemplate/>` to override the branch-finding strategy (using `{{apiVersion}}` template param)
 * You can also use `<localSpecPath/>` to skip cloning, and develop using a locally managed api
 
 ### Generate API server-stubbing/client-sdk's
