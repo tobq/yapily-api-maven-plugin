@@ -7,7 +7,6 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
 ## Adding plugin to pom.xml
 
 ```xml
-
 <plugin>
     <groupId>com.yapily</groupId>
     <artifactId>yapily-api-maven-plugin</artifactId>
@@ -15,25 +14,21 @@ Automatically handles API server-stubbing/client-sdk generation, for service imp
         <execution>
             <id>generate-server</id>
             <goals>
-                <goal>generate</goal>
+                <goal>generate-server</goal>
             </goals>
             <configuration>
-                <serverApi>
-                    <type>yapily-platform-security</type>
-                    <version>0.0.6</version>
-                </serverApi>
+                <apiName>yapily-platform-security</apiName>
+                <apiVersion>0.0.6</apiVersion>
             </configuration>
         </execution>
         <execution>
             <id>generate-client</id>
             <goals>
-                <goal>generate</goal>
+                <goal>generate-client</goal>
             </goals>
             <configuration>
-                <clientApi>
-                    <type>yapily-server-images</type>
-                    <version>0.0.2</version>
-                </clientApi>
+                <apiName>yapily-server-images</apiName>
+                <apiVersion>0.0.2</apiVersion>
             </configuration>
         </execution>
     </executions>
