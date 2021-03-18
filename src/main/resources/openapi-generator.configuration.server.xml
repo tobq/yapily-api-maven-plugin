@@ -1,8 +1,8 @@
 <configuration>
     <generatorName>spring</generatorName>
     <configOptions>
-        <apiPackage>com.yapily.api</apiPackage>
-        <modelPackage>com.yapily.model</modelPackage>
+        <apiPackage>com.yapily.openapi.api</apiPackage>
+        <modelPackage>com.yapily.openapi.model</modelPackage>
 
         <java8>true</java8>
         <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
