@@ -13,8 +13,12 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig;
+import org.eclipse.jgit.transport.SshTransport;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
+
+import com.jcraft.jsch.Session;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +31,11 @@ class Utils {
     public static final String DEFAULT_GIT_URL_TEMPLATE = "git@bitbucket.org:yapily/{{apiName}}-api.git";
     private final Path RELATIVE_GENERATED_SOURCE_FOLDER_ROOT = Path.of("src");
     public final Path RELATIVE_GENERATED_SOURCE_FOLDER = RELATIVE_GENERATED_SOURCE_FOLDER_ROOT.resolve("main/java");
+    public static final JschConfigSessionFactory DEFAULT_SSH_AUTH = new JschConfigSessionFactory() {
+        @Override protected void configure(OpenSshConfig.Host hc, Session session) {
+            session.setConfig("StrictHostKeyChecking", "no");
+        }
+    };
 
     Path getApiRepositoryPath(YapilyApi api, MavenProject project) {
         return getSpecParent(project).resolve(api.getLocalGitRepositoryFolderName());
@@ -93,13 +102,22 @@ class Utils {
             var apiGitBranch = gitBranchTemplate.replace("{{apiVersion}}", api.getVersion());
             log.info("Cloning {}:{} into {}", apiGitUrl, apiGitBranch, outputPath);
 
-            Git.cloneRepository()
-               .setURI(apiGitUrl)
-               .setCredentialsProvider(CredentialsProvider.getDefault())
-               .setBranch(apiGitBranch)
-               .setDirectory(outputPath.toFile())
-               .call()
-               .close();
+            var cloneCommand = Git.cloneRepository()
+                                  .setURI(apiGitUrl)
+                                  .setBranch(apiGitBranch)
+                                  .setDirectory(outputPath.toFile());
+
+            // If no user-defined environment SSH Auth is defined, we use the default JSdh implementation
+            if (System.getenv("GIT_SSH") == null) {
+                cloneCommand.setTransportConfigCallback(transport -> {
+                    if (!(transport instanceof SshTransport)) throw new ClassCastException(transport + " cannot be cast to the SshTransport");
+
+                    var sshTransport = (SshTransport) transport;
+                    sshTransport.setSshSessionFactory(DEFAULT_SSH_AUTH);
+                });
+            }
+
+            cloneCommand.call().close();
         } catch (IOException | GitAPIException e) {
             try {
                 Utils.cleanSpecLocalGitRepository(api, project);
