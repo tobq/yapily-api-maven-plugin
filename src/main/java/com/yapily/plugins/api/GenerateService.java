@@ -71,7 +71,9 @@ public class GenerateService {
     public Path generate() throws MojoExecutionException {
         var localMode = localSpecPath != null;
 
-        if (!localMode) {
+        if (localMode) {
+            log.info("Generating {} using local spec: {}", api, localSpecPath);
+        } else {
             fetchApi();
         }
 
