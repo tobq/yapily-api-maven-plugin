@@ -35,7 +35,7 @@ public class GenerateClientMojo extends AbstractMojo {
     String gitBranchTemplate;
     @Parameter(defaultValue = "true")
     boolean autoGitignore;
-    @Parameter(property = "version.openapi-generator", defaultValue = "5.0.1")
+    @Parameter(property = "version.openapi-generator", defaultValue = "5.1.0")
     String openapiGeneratorVersion;
     @Parameter
     private Map<?, ?> openapiConfigurationOverrides;
