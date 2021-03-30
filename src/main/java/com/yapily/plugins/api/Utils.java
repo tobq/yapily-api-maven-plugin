@@ -15,7 +15,6 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.OpenSshConfig;
-import org.eclipse.jgit.transport.SshTransport;
 import org.twdata.maven.mojoexecutor.MojoExecutor;
 
 import com.jcraft.jsch.Session;
@@ -107,15 +106,9 @@ class Utils {
                                   .setBranch(apiGitBranch)
                                   .setDirectory(outputPath.toFile());
 
-            // If no user-defined environment SSH Auth is defined, we use the default JSdh implementation
-            if (System.getenv("GIT_SSH") == null) {
-                cloneCommand.setTransportConfigCallback(transport -> {
-                    if (!(transport instanceof SshTransport)) throw new ClassCastException(transport + " cannot be cast to the SshTransport");
-
-                    var sshTransport = (SshTransport) transport;
-                    sshTransport.setSshSessionFactory(DEFAULT_SSH_AUTH);
-                });
-            }
+//            // If no user-defined environment SSH Auth is defined, we use the default JSdh implementation
+            if (System.getenv("GIT_SSH") == null)
+                cloneCommand.setTransportConfigCallback(new SshTransportConfigCallback());
 
             cloneCommand.call().close();
         } catch (IOException | GitAPIException e) {
