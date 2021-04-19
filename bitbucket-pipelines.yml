@@ -1,5 +1,5 @@
 image:
-  name: eu.gcr.io/yapily-staging/yapily-tools/maven-openjdk-node
+  name: eu.gcr.io/yapily-staging/yapily-tools/maven-openjdk-node@sha256:e97977f7d54d203e3b18e8ae66f13b7b55437bf3456d48ef39d6ce629a66dfdd
   username: _json_key
   password: "$GCR_JSON_KEY"
 
