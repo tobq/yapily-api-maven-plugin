@@ -5,7 +5,7 @@
         <modelPackage>com.yapily.openapi.model</modelPackage>
 
         <java8>true</java8>
-        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+        <additionalModelTypeAnnotations>@lombok.Builder @lombok.AllArgsConstructor @lombok.NoArgsConstructor</additionalModelTypeAnnotations>
         <openApiNullable>false</openApiNullable>
         <useTags>true</useTags>
         <reactive>true</reactive>
