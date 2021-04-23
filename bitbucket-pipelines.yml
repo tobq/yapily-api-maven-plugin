@@ -1,0 +1,23 @@
+image:
+  name: eu.gcr.io/yapily-staging/yapily-tools/maven-openjdk-node@sha256:e97977f7d54d203e3b18e8ae66f13b7b55437bf3456d48ef39d6ce629a66dfdd
+  username: _json_key
+  password: "$GCR_JSON_KEY"
+
+options:
+  max-time: 10
+
+definitions:
+  steps:
+    - step: &build-and-push
+        name: Build
+        variables:
+          - MAVEN_CLI_OPTS: "-s settings.xml -Dserver.username=$YAPILY_NEXUS_USERNAME -Dserver.password=$YAPILY_NEXUS_PASSWORD"
+        script:
+          - mvn $MAVEN_CLI_OPTS yapily-api:fetch
+
+pipelines:
+  branches:
+    master:
+      - step:
+          <<: *build-and-push
+          name: Build and Push to Nexus
