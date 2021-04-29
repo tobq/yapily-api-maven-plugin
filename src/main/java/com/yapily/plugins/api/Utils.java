@@ -106,7 +106,7 @@ class Utils {
                                   .setBranch(apiGitBranch)
                                   .setDirectory(outputPath.toFile());
 
-//            // If no user-defined environment SSH Auth is defined, we use the default JSdh implementation
+            // If no user-defined environment SSH Auth is defined, we use the default JSch implementation
             if (System.getenv("GIT_SSH") == null)
                 cloneCommand.setTransportConfigCallback(new SshTransportConfigCallback());
 

@@ -20,7 +20,9 @@ public class SshTransportConfigCallback implements TransportConfigCallback {
 
     @Override
     public void configure(Transport transport) {
-        var sshTransport = (SshTransport) transport;
-        sshTransport.setSshSessionFactory(sshSessionFactory);
+        if (transport instanceof SshTransport) {
+            var sshTransport = (SshTransport) transport;
+            sshTransport.setSshSessionFactory(sshSessionFactory);
+        }
     }
 }
